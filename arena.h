@@ -15,6 +15,7 @@ int nn_arena_init(nn_arena *arena, size_t n);
 void nn_arena_reset(nn_arena *arena);
 void *nn_arena_alloc(nn_arena *arena, size_t n);
 void nn_arena_free(nn_arena *arena);
+void nn_arena_reset_to(nn_arena *arena, size_t checkpoint);
 
 #ifdef NN_ARENA_IMPLEMENTATION
 
@@ -29,6 +30,11 @@ int nn_arena_init(nn_arena *arena, size_t n)
 void nn_arena_reset(nn_arena *arena)
 {
     arena->count = 0;
+}
+
+void nn_arena_reset_to(nn_arena *arena, size_t checkpoint)
+{
+    arena->count = checkpoint;
 }
 
 void *nn_arena_alloc(nn_arena *arena, size_t n)
