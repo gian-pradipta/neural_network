@@ -1,0 +1,12 @@
+#ifndef IMPLEMENTATIONS_H
+#define IMPLEMENTATIONS_H
+
+#define NN_ARENA_IMPLEMENTATION 
+#include "arena.h"
+#undef NN_ARENA_IMPLEMENTATION 
+
+#define NN_MAT_IMPLEMENTATION
+#include "matrix.h"
+#undef NN_MAT_IMPLEMENTATION
+
+#endif // IMPLEMENTATIONS_H
