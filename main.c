@@ -2,14 +2,10 @@
 #include <time.h>
 #include <math.h>
 
-#define NN_ARENA_IMPLEMENTATION 
+#include "implementations.h"
+
 #include "arena.h"
-#undef NN_ARENA_IMPLEMENTATION 
-
-#define NN_MAT_IMPLEMENTATION
 #include "matrix.h"
-#undef NN_MAT_IMPLEMENTATION
-
 #include "nn_assert.h"
 #include "dynamic_array.h"
 
@@ -46,6 +42,11 @@ float sigmoidf(float x)
     return 1.0 / (1.0 + exp(-x));
 }
 
+float ReLUf(float x)
+{
+    return fmax(0, x);
+}
+
 float loss_mse(nn_mat *dataset)
 {
     float sum = 0.0;
@@ -75,7 +76,7 @@ float forward_pass(float x, float y)
     nn_mat_mul(&a, &w, &o);
     o2 = make_out(&o, &b);
     nn_mat_add(&o, &b, &o2);
-    nn_mat_map(&o2, sigmoidf, &o2);
+    nn_mat_map(&o2, ReLUf, &o2);
 
     o = make_out(&o2, &w2);
     nn_mat_mul(&o2, &w2, &o);
@@ -156,7 +157,7 @@ int main()
 
     init_params();
     size_t i = 0;
-    size_t epoch = 10 * 1000;
+    size_t epoch = 10 * 10 * 1000;
 
     for (; i < epoch; ++i) {
         size_t memstate = arena.count;
@@ -229,11 +230,10 @@ int main()
         nn_mat_fill(&tmp, (g_w2 * learning_rate));
         nn_mat_sub(&w2, &tmp, &w2);
 
-        printf("MSE = %f \n", mse);
         nn_arena_reset_to(&arena, memstate);
     }
 
-    printf("- ITERASI - 1 -\n");
+    printf("epoch = %zu\n", epoch);
     printf("finished with MSE = %f\n", mse);
     nn_mat_print(&dataset);
     printf("------------------------------\n\n");
